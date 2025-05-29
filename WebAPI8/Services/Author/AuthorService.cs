@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebAPI8.Data;
+using WebAPI8.DTOs.Author;
 using WebAPI8.Models;
 
 namespace WebAPI8.Services.Author
@@ -13,9 +14,65 @@ namespace WebAPI8.Services.Author
             _appDbContext = appDbContext;
         }
 
-        public Task<ResponseModel<List<AuthorModel>>> CreateAuthor()
+        public async Task<ResponseModel<List<AuthorModel>>> CreateAuthor(AuthorCreationDTO authorCreationDTO)
         {
-            throw new NotImplementedException();
+            ResponseModel<List<AuthorModel>> response = new();
+
+            try
+            {
+                var author = new AuthorModel()
+                {
+                    Name = authorCreationDTO.Name,
+                    LastName = authorCreationDTO.LastName
+                };
+
+                _appDbContext.Add(author);
+                await _appDbContext.SaveChangesAsync();
+
+                response.Data = await _appDbContext.Authors.ToListAsync();
+                response.Message = "Author create sucessfully.";
+
+                return response;
+            }
+            catch(Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Status = false;
+
+                return response;
+            }
+        }
+
+        public async Task<ResponseModel<List<AuthorModel>>> DeleteAuthor(int authorId)
+        {
+            ResponseModel<List<AuthorModel>> response = new();
+
+            try
+            {
+                var author = await _appDbContext.Authors.FirstOrDefaultAsync(authorDb => authorDb.AuthorId == authorId);
+
+                if (author == null)
+                {
+                    response.Message = "Author not found.";
+                    return response;
+                }
+
+                _appDbContext.Remove(author);
+                await _appDbContext.SaveChangesAsync();
+
+                response.Data = await _appDbContext.Authors.ToListAsync();
+                response.Message = "Author deleted sucessfully";
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Status = false;
+
+                return response;
+            }
         }
 
         public async Task<ResponseModel<AuthorModel>> GetAuthorByBookId(int bookId)
@@ -89,6 +146,41 @@ namespace WebAPI8.Services.Author
                 response.Message = "All authors are collected";
 
                 return response;
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Status = false;
+
+                return response;
+            }
+        }
+
+        public async Task<ResponseModel<List<AuthorModel>>> UpdateAuthor(AuthorUpdateDTO authorUpdateDTO)
+        {
+            ResponseModel<List<AuthorModel>> response = new();
+
+            try
+            {
+                var author = await _appDbContext.Authors.FirstOrDefaultAsync(authorDb => authorDb.AuthorId == authorUpdateDTO.AuthorId);
+
+                if (author == null)
+                {
+                    response.Message = "Author not found.";
+                    return response;
+                }
+
+                author.Name = authorUpdateDTO.Name;
+                author.LastName = authorUpdateDTO.LastName;
+
+                _appDbContext.Update(author);
+                await _appDbContext.SaveChangesAsync();
+
+                response.Data = await _appDbContext.Authors.ToListAsync();
+                response.Message = "Author update sucessfully";
+
+                return response;
+                
             }
             catch (Exception ex)
             {
