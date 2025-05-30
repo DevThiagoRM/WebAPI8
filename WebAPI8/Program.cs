@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebAPI8.Data;
 using WebAPI8.Services.Author;
+using WebAPI8.Services.Book;
 
 var builder = WebApplication.CreateBuilder(args);
  
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 var app = builder.Build();
 

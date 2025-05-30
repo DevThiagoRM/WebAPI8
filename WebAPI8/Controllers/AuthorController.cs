@@ -10,17 +10,22 @@ namespace WebAPI8.Controllers
     [ApiController]
     public class AuthorController : ControllerBase
     {
-        // Instancia a interface
+        #region Author Instance Interface
 
         private readonly IAuthorService _IauthorService;
+
         public AuthorController(IAuthorService authorService)
         {
             _IauthorService = authorService;
-        }
+        } 
 
-        // [HttpGet]
-        
-        [HttpGet("GetAuthors")] 
+        #endregion
+
+        #region Author Methods
+
+        #region [HttpGet]
+
+        [HttpGet("GetAuthors")]
         public async Task<ActionResult<ResponseModel<List<AuthorModel>>>> GetAuthors()
         {
             var authors = await _IauthorService.GetAuthors();
@@ -34,15 +39,16 @@ namespace WebAPI8.Controllers
             return Ok(author);
         }
 
-        [HttpGet("GetAuthorByBookId/{bookId}")] 
+        [HttpGet("GetAuthorByBookId/{bookId}")]
         public async Task<ActionResult<ResponseModel<AuthorModel>>> GetAuthorByBookId(int bookId)
         {
             var author = await _IauthorService.GetAuthorByBookId(bookId);
             return Ok(author);
         }
 
+        #endregion
 
-        // [HttpPost]
+        #region [HttpPost]
 
         [HttpPost("CreateAuthor")]
         public async Task<ActionResult<ResponseModel<List<AuthorModel>>>> CreateAuthor(AuthorCreationDTO authorCreationDTO)
@@ -51,8 +57,9 @@ namespace WebAPI8.Controllers
             return Ok(authors);
         }
 
+        #endregion
 
-        // [HttpPut]
+        #region [HttpPut]
 
         [HttpPut("UpdateAuthor")]
         public async Task<ActionResult<ResponseModel<List<AuthorModel>>>> UpdateAuthor(AuthorUpdateDTO authorUpdateDTO)
@@ -61,7 +68,9 @@ namespace WebAPI8.Controllers
             return Ok(authors);
         }
 
-        // [HttpDelete]
+        #endregion
+
+        #region [HttpDelete]
 
         [HttpDelete("DeleteAuthor")]
         public async Task<ActionResult<ResponseModel<List<AuthorModel>>>> DeleteAuthor(int authorId)
@@ -70,6 +79,8 @@ namespace WebAPI8.Controllers
             return Ok(author);
         }
 
+        #endregion
 
+        #endregion
     }
 }

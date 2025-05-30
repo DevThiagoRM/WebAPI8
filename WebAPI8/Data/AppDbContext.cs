@@ -9,7 +9,6 @@ namespace WebAPI8.Data
         {
         }
 
-        // Tabelas para criação no banco
         public DbSet<AuthorModel> Authors { get; set; }
         public DbSet<BookModel> Books { get; set; }
     }
